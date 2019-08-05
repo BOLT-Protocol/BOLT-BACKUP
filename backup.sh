@@ -4,12 +4,13 @@ SSH_KEY_PATH=~/Downloads/BOLTCHAIN.pem
 ROOTFOLDER="Backup"
 FOLDER="${ROOTFOLDER}/BOLT_"$(date +"%Y_%m_%d_%H")
 SYNC_FOLDER="BOLT_BACKUP"
-LAST_FOLDER_RAW=$(ls backup| tail -n 1 )
-LAST_FOLDER=$(echo $LAST_FOLDER_RAW | sed -e "s/.tar.gz//")
-TAR_FOLDER_RAW=$(ls backup| tail -n 2 | sed -n 1p)
-TAR_FOLDER=$(echo $TAR_FOLDER_RAW | sed -e "s/.tar.gz//")
+# LAST_FOLDER_RAW=$(ls backup| tail -n 1 )
+# LAST_FOLDER=$(echo $LAST_FOLDER_RAW | sed -e "s/.tar.gz//")
+# TAR_FOLDER_RAW=$(ls backup| tail -n 2 | sed -n 1p)
+# TAR_FOLDER=$(echo $TAR_FOLDER_RAW | sed -e "s/.tar.gz//")
 DBNAME="BOLT_DB_"$(date +"%Y_%m_%d_%H")".tar.gz"
 DBPATH="trustDB"
+BACKUP_AMOUNT="4"
 
 
 dump() {
@@ -19,7 +20,6 @@ dump() {
       IFS=";" read -r -a arr <<< "${i}"
       name="${arr[0]}"
       path="${arr[1]}"
-      # scp -r -i ${SSH_KEY_PATH} ${SSH_IP}:/home/ubuntu/${path} ./${FOLDER}/${name}
       rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete --backup --backup-dir=$(pwd)/$FOLDER  ${SSH_IP}:${path} ./${SYNC_FOLDER}/${name}
   done
 }
@@ -28,16 +28,21 @@ dump_db() {
   ssh -i ${SSH_KEY_PATH} ${SSH_IP} "tar -zcvf ${DBNAME} ${DBPATH}" | cat > ./${SYNC_FOLDER}/${DBNAME}
 }
 
+delete_old() {
+  TOTAL=$(find ${ROOTFOLDER} -type f | wc -l)
+  if [ $TOTAL -gt $BACKUP_AMOUNT ]; then
+    DELETE_FILE=$(ls -1 ${ROOTFOLDER} | head -n 1)
+    echo "TOTAL $TOTAL delete $DELETE_FILE"
+    rm -rf "${ROOTFOLDER}/$DELETE_FILE"
+  fi
+}
+
 main() {
   if [ "${ROOTFOLDER}/${LAST_FOLDER}" == ${FOLDER} ]; then
     # same files
     return 1
   fi
 
-  # mkdir -p ${FOLDER}
-  # if [ "${LAST_FOLDER}" != "" ] ; then
-  #   cp -rf ${ROOTFOLDER}/${LAST_FOLDER}/* ${FOLDER}
-  # fi
   if [ ! -d $SYNC_FOLDER ]; then
     mkdir $SYNC_FOLDER
   fi
@@ -57,12 +62,10 @@ main() {
 
   dump_db
 
-  if [ $TAR_FOLDER != "" ] && [[ ! $TAR_FOLDER_RAW =~ ".tar.gz" ]] ; then
-    tar -zcvf "${ROOTFOLDER}/${TAR_FOLDER}.tar.gz" ${ROOTFOLDER}/${TAR_FOLDER}
-    if [ $? == 0 ]; then
-      rm -rf ${ROOTFOLDER}/${TAR_FOLDER}
-    fi
-  fi
+  tar -zcvf "${FOLDER}.tar.gz" ${FOLDER}
+  rm -rf ${FOLDER}
+
+  delete_old
 }
 
 main "$@"
