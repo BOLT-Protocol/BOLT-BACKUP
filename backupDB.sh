@@ -5,11 +5,11 @@ ROOTFOLDER="/home/tideops/BackupDB"
 BACKUP_DBNAME1="trust_"$(date +"%Y_%m_%d_%H")".dmp"
 BACKUP_DBNAME2="bolt_"$(date +"%Y_%m_%d_%H")".dmp"
 USER_NAME="postgres"
-KEEP_DAYS="90"
+BACKUP_AMOUNT="90"
 
 delete_old() {
   TOTAL=$(find ${ROOTFOLDER} -type f | wc -l)
-  if [ $TOTAL -gt $KEEP_DAYS ]; then
+  if [ $TOTAL -gt $BACKUP_AMOUNT ]; then
     echo "\e[0;32delete old data ${ROOTFOLDER}/${DELETE_FILE} \e[0m"
     DELETE_FILE=$(ls -1 ${ROOTFOLDER} | head -n 1)
     rm -rf "${ROOTFOLDER}/${DELETE_FILE}"

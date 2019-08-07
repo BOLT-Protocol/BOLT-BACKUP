@@ -63,7 +63,7 @@ main() {
 
   if [ -d $FOLDER ]; then
     tar -zcvf "${FOLDER}.tar.gz" ${FOLDER}
-    # rm -rf ${FOLDER}
+    rm -rf ${FOLDER}
   fi
 
   delete_old
