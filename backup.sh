@@ -1,19 +1,20 @@
 #!/bin/bash
-BOLT_SSH_IP=ubuntu@ec2-3-216-50-113.compute-1.amazonaws.com
-APIGATEWAY_SSH_IP=ubuntu@ec2-3-216-89-157.compute-1.amazonaws.com
-HOWINVEST_SSH_IP=ubuntu@ec2-3-216-89-157.compute-1.amazonaws.com
-SSH_KEY_PATH=~/Downloads/BOLTCHAIN.pem
+BOLT_SSH_IP=172.26.13.218
+APIGATEWAY_SSH_IP=172.26.6.233
+HOWINVEST_SSH_IP=172.26.8.110
+SSH_KEY_PATH=~/.ssh/id_rsa
 ROOTFOLDER="Backup"
 FOLDER="${ROOTFOLDER}/BOLT_"$(date +"%Y_%m_%d_%H")
 SYNC_FOLDER="BOLT_BACKUP"
 BACKUP_AMOUNT="300"
-HOME="/home/ubuntu"
+HOME="/home/tideops"
 
 sync() {
   list=$1
+  IFS=";"
   for i in "${list[@]}"
   do
-    IFS=";" read -r -a arr <<< "${i}"
+    read -a arr <<< "${i}"
     plateform="${arr[0]}"
     name="${arr[1]}"
     path="${arr[2]}"
@@ -54,14 +55,13 @@ main() {
   list[2]="bolt1;bolt-keystone;${HOME}/bolt-keystone/MerMer-framework/dataset"
   list[3]="bolt1;bolt-trust;${HOME}/bolt-trust/MerMer-framework/dataset"
   # microservice
-  list[4]="bolt2;BOLT-CURRENCY.config.toml;${HOME}/BOLT/BOLT-CURRENCY/sample.config.toml"
-  list[5]="bolt2;BOLT-KEYCHAIN.config.toml;${HOME}/BOLT/BOLT-KEYCHAIN/sample.config.toml"
-  list[6]="bolt2;BOLT-KEYSTONE.config.toml;${HOME}/BOLT/BOLT-KEYSTONE/sample.config.toml"
-  list[7]="bolt2;BOLT-TRUST.config.toml;${HOME}/BOLT/BOLT-TRUST/sample.config.toml"
+  list[4]="bolt2;BOLT-CURRENCY.config.toml;${HOME}/BOLT-CURRENCY/sample.config.toml"
+  list[5]="bolt2;BOLT-KEYCHAIN.config.toml;${HOME}/BOLT-KEYCHAIN/sample.config.toml"
+  list[6]="bolt2;BOLT-KEYSTONE.config.toml;${HOME}/BOLT-KEYSTONE/sample.config.toml"
+  list[7]="bolt2;BOLT-TRUST.config.toml;${HOME}/BOLT-TRUST/sample.config.toml"
   # howinvest
   list[9]="apigateway;howinvestmockapi;${HOME}/howinvestmockapi/MerMer-framework/dataset"
   list[8]="howninvest;howinvest-receptiondesk;${HOME}/howinvest-receptiondesk/MerMer-framework/dataset"
-  list[10]="howninvest;OrderEngine;${HOME}/OrderEngine/"
   sync ${list}
 
   if [ -d $FOLDER ]; then

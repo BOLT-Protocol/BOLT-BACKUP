@@ -1,7 +1,7 @@
 #!/bin/bash
-SSH_IP=tideops@ip-172-26-13-218
+SSH_IP=tideops@172.26.13.218
 SSH_KEY_PATH=~/.ssh/id_rsa
-ROOTFOLDER="/home/tideops/BackupDB"
+ROOTFOLDER="BackupDB"
 remoteRecoveryDBfile="/home/tideops/BackupDB/$1"
 USER_NAME="postgres"
 

@@ -1,10 +1,11 @@
 #!/bin/bash
-BOLT_SSH_IP=ubuntu@ec2-3-216-50-113.compute-1.amazonaws.com
-HOWINVEST_SSH_IP=ubuntu@ec2-3-216-89-157.compute-1.amazonaws.com
-SSH_KEY_PATH=~/Downloads/BOLTCHAIN.pem
+BOLT_SSH_IP=172.26.13.218
+APIGATEWAY_SSH_IP=172.26.6.233
+HOWINVEST_SSH_IP=172.26.8.110
+SSH_KEY_PATH=~/.ssh/id_rsa
 BACKUP_FOLDER="Backup"
 SYNC_FOLDER="BOLT_BACKUP"
-HOME="/home/ubuntu"
+HOME="/home/tideops"
 
 sync() {
   list=$1
@@ -19,6 +20,8 @@ sync() {
       rsync -av -e "ssh -i ${SSH_KEY_PATH}" ./${SYNC_FOLDER}/${name}/dataset/* ${BOLT_SSH_IP}:${path} 
     elif [ $plateform == "howninvest" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH}" ./${SYNC_FOLDER}/${name}/dataset/* ${HOWINVEST_SSH_IP}:${path} 
+    elif [ $plateform == "apigateway" ]; then
+      rsync -av -e "ssh -i ${SSH_KEY_PATH}" ./${SYNC_FOLDER}/${name}/dataset/* ${APIGATEWAY_SSH_IP}:${path} 
     fi
   done
 }
@@ -50,8 +53,8 @@ main() {
   list[7]="bolt;BOLT-TRUST.config.toml;${HOME}/BOLT/BOLT-TRUST/sample.config.toml"
   # howinvest
   list[8]="howninvest;howinvest-receptiondesk;${HOME}/howinvest-receptiondesk/MerMer-framework/dataset"
-  list[9]="howninvest;howinvestmockapi;${HOME}/howinvestmockapi/MerMer-framework/dataset"
-  list[10]="howninvest;OrderEngine;${HOME}/OrderEngine"
+  list[9]="apigateway;howinvestmockapi;${HOME}/howinvestmockapi/MerMer-framework/dataset"
+  #list[10]="howninvest;OrderEngine;${HOME}/OrderEngine"
   sync ${list}
 
   rm -rf ${BACKUP_FOLDER}/$ZIPFILE_NAME

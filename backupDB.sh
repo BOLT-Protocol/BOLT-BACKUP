@@ -1,11 +1,12 @@
 #!/bin/bash
-SSH_IP=tideops@ip-172-26-13-218
+SSH_IP=tideops@172.26.13.218
 SSH_KEY_PATH=~/.ssh/id_rsa
-ROOTFOLDER="/home/tideops/BackupDB"
+ROOTFOLDER="BackupDB"
 BACKUP_DBNAME1="trust_"$(date +"%Y_%m_%d_%H")".dmp"
 BACKUP_DBNAME2="bolt_"$(date +"%Y_%m_%d_%H")".dmp"
 USER_NAME="postgres"
-BACKUP_AMOUNT="90"
+USER_PASSWORD=""
+KEEP_DAYS="90"
 
 delete_old() {
   TOTAL=$(find ${ROOTFOLDER} -type f | wc -l)
@@ -22,10 +23,18 @@ main() {
     mkdir -p $ROOTFOLDER
   fi
 
-  ssh -i ${SSH_KEY_PATH} ${SSH_IP} "mkdir -p ${ROOTFOLDER}; echo '\e[0;32mplease enter db password!\e[0m' ;pg_dump -U ${USER_NAME}  -Fc trust > ${ROOTFOLDER}/${BACKUP_DBNAME1}; echo '\e[0;32mplease enter db password!\e[0m' ; pg_dump -U ${USER_NAME}  -Fc bolt > ${ROOTFOLDER}/${BACKUP_DBNAME2}"
+  ssh -i ${SSH_KEY_PATH} ${SSH_IP} "mkdir -p ${ROOTFOLDER}; echo '\e[0;32mplease enter db password!\e[0m' ;pg_dump -U ${USER_NAME}  -Fc trust > ${ROOTFOLDER}/${BACKUP_DBNAME1};"<<EOF
+${USER_PASSWORD}
+EOF
 
-  rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete  ${SSH_IP}:${ROOTFOLDER}/* ${ROOTFOLDER}
+  ssh -i ${SSH_KEY_PATH} ${SSH_IP} "echo '\e[0;32mplease enter db password!\e[0m' ; pg_dump -U ${USER_NAME}  -Fc bolt > ${ROOTFOLDER}/${BACKUP_DBNAME2}"<<EOF
+${USER_PASSWORD}
+EOF
 
+  #rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete  ${SSH_IP}:${ROOTFOLDER}/* ${ROOTFOLDER}
+  scp -r -i ${SSH_KEY_PATH} ${SSH_IP}:/home/tideops/${ROOTFOLDER}/* ${ROOTFOLDER}/
+
+  ssh -i ${SSH_KEY_PATH} ${SSH_IP} "rm -rf ${ROOTFOLDER}"
   delete_old
 }
 
