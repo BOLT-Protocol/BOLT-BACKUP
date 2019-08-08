@@ -15,25 +15,25 @@ sync() {
     plateform="${arr[0]}"
     name="${arr[1]}"
     path="${arr[2]}"
-    echo "\e[0;32rsync ${name} data\e[0m"
+    echo "rsync ${name} data"
     if [ $plateform == "bolt" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" ./${SYNC_FOLDER}/${name}/dataset/* ${BOLT_SSH_IP}:${path} 
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" ./${SYNC_FOLDER}/${name}/dataset/* ${BOLT_SSH_IP}:${path} 
     elif [ $plateform == "howninvest" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" ./${SYNC_FOLDER}/${name}/dataset/* ${HOWINVEST_SSH_IP}:${path} 
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" ./${SYNC_FOLDER}/${name}/dataset/* ${HOWINVEST_SSH_IP}:${path} 
     elif [ $plateform == "apigateway" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" ./${SYNC_FOLDER}/${name}/dataset/* ${APIGATEWAY_SSH_IP}:${path} 
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" ./${SYNC_FOLDER}/${name}/dataset/* ${APIGATEWAY_SSH_IP}:${path} 
     fi
   done
 }
 
 main() {
-  echo "\e[0;32mstart recovery!~ \e[0m"
+  echo "start recovery!~ "
   if [ -z $1 ]; then
-    echo "\e[0;31mrequire recovery file!!\e[0m"
+    echo "require recovery file!!"
     return
   fi
 
-  echo "\e[0;32unzip backup file!~ \e[0m"
+  echo "unzip backup file!~ "
   tar -zxvf "${BACKUP_FOLDER}/$1"
 
   ZIPFILE_NAME=$(echo $1 | sed s/.tar.gz//g)

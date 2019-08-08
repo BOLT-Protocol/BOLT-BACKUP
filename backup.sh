@@ -8,6 +8,7 @@ FOLDER="${ROOTFOLDER}/BOLT_"$(date +"%Y_%m_%d_%H")
 SYNC_FOLDER="BOLT_BACKUP"
 BACKUP_AMOUNT="300"
 HOME="/home/tideops"
+LOG_PATH="backuplog"
 
 sync() {
   list=$1
@@ -18,18 +19,18 @@ sync() {
     plateform="${arr[0]}"
     name="${arr[1]}"
     path="${arr[2]}"
-    # echo "\e[0;32rsync ${name} data\e[0m"
+    echo "rsync ${name} data" 2>&1 | tee -a ${LOG_PATH}/backup.log >> ${LOG_PATH}/backup.err.log
     if [ $plateform == "bolt1" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${BOLT_SSH_IP}:${path} ./${SYNC_FOLDER}/${name}
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${BOLT_SSH_IP}:${path} ./${SYNC_FOLDER}/${name}  1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "bolt2" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete --backup --backup-dir=$(pwd)/$FOLDER/  ${BOLT_SSH_IP}:${path} ./${SYNC_FOLDER}/${name}
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" --delete --backup --backup-dir=$(pwd)/$FOLDER/  ${BOLT_SSH_IP}:${path} ./${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "howninvest" ] && [ $name == "OrderEngine" ]; then
-      mkdir -p "${SYNC_FOLDER}/OrderEngine/dataset"
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path}/* ./${SYNC_FOLDER}/${name}/dataset
+      mkdir -p "${SYNC_FOLDER}/OrderEngine/dataset"  1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path}/* ./${SYNC_FOLDER}/${name}/dataset 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "howninvest" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path} ./${SYNC_FOLDER}/${name}
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path} ./${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "apigateway" ]; then
-      rsync -av -e "ssh -i ${SSH_KEY_PATH}" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${APIGATEWAY_SSH_IP}:${path} ./${SYNC_FOLDER}/${name}
+      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 2222" --delete --backup --backup-dir=$(pwd)/$FOLDER/${name}  ${APIGATEWAY_SSH_IP}:${path} ./${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     fi
   done
 }
@@ -37,13 +38,18 @@ sync() {
 delete_old() {
   TOTAL=$(find ${ROOTFOLDER} -type f | wc -l)
   if [ $TOTAL -gt $BACKUP_AMOUNT ]; then
-    echo "\e[0;32delete old data ${ROOTFOLDER}/${DELETE_FILE} \e[0m"
+    echo "delete old data ${ROOTFOLDER}/${DELETE_FILE} " 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     DELETE_FILE=$(ls -1 ${ROOTFOLDER} | head -n 1)
     rm -rf "${ROOTFOLDER}/${DELETE_FILE}"
   fi
 }
 
 main() {
+  if [ ! -d $LOG_PATH ]; then
+    mkdir -p $LOG_PATH
+  fi
+  echo "$(date +"%Y_%m_%d_%H:%M:%S") ===== start backup leveldb & config!~ =====" 2>&1 | tee -a ${LOG_PATH}/backup.log >> ${LOG_PATH}/backup.err.log
+
   if [ ! -d $SYNC_FOLDER ]; then
     mkdir $SYNC_FOLDER
   fi
@@ -70,6 +76,7 @@ main() {
   fi
 
   delete_old
+  echo "$(date +"%Y_%m_%d_%H:%M:%S") ===== backup leveldb & config finish!~ =====" 2>&1 | tee -a ${LOG_PATH}/backup.log >> ${LOG_PATH}/backup.err.log
 }
 
 main "$@"

@@ -16,6 +16,7 @@ ROOTFOLDER: 要備份的目錄
 SYNC_FOLDER: sync 遠端設定檔的目錄
 HOME: sync 目標家目錄（配合下方 list）
 BACKUP_AMOUNT: 備份份數
+LOG_PATH: log 存放位置
 ```
 
 ### 內部 sync() 參數
@@ -45,6 +46,7 @@ SSH_KEY_PATH: ssh key
 ROOTFOLDER: 要備份的目錄
 USER_NAME: DB username
 BACKUP_AMOUNT: 備份份數
+LOG_PATH: log 存放位置
 ```
 
 ### exec:
@@ -111,4 +113,11 @@ USER_NAME: PostgreSQL username
 sh recoverDB.sh "備份檔檔名" "復原 table 名"
 sh recoverDB.sh bolt_2019_08_07_16.dmp bolt
 sh recoverDB.sh trust_2019_08_07_16.dmp trust
+```
+
+## Crontab
+
+```
+0 * * * * bash /home/tideops/BOLT-BACKUP/backup.sh
+0 0 * * * bash /home/tideops/BOLT-BACKUP/backupDB.sh
 ```
