@@ -31,7 +31,7 @@ list[0]="bolt1;bolt-currency;/home/ubuntu/bolt-currency/MerMer-framework/dataset
 ### exec:
 
 ```
-$ sh backup.sh
+$ bash backup.sh
 ```
 
 ## backup PostgreSQL
@@ -52,7 +52,7 @@ LOG_PATH: log 存放位置
 ### exec:
 
 ```
-$ sh backupDB.sh
+$ bash backupDB.sh
 start backup db!~
 please enter db password!
 Password: 
@@ -87,9 +87,20 @@ HOME: sync 目標家目錄（配合下方 list）
 
 ### exec:
 
+先於 BACKUP_FOLDER 尋找要還原檔案
+
+···
+$ ls Backup
+BOLT_2019_08_07_17.tar.gz
+BOLT_2019_08_07_18.tar.gz
+BOLT_2019_08_07_20.tar.gz
+···
+
+執行還原
+
 ```
-sh recover.sh 復原備份檔案名稱
-sh recover.sh BOLT_2019_08_07_17.tar.gz
+bash recover.sh 復原備份檔案名稱
+bash recover.sh BOLT_2019_08_07_17.tar.gz
 ```
 
 ## recovery PostgreSQL
@@ -109,10 +120,22 @@ USER_NAME: PostgreSQL username
 
 ### exec:
 
+先於 BACKUP_FOLDER 尋找要還原檔案
+
+···
+$ ls BackupDB
+bolt_2019_08_06_16.dmp
+bolt_2019_08_07_16.dmp
+trust_2019_08_06_16.dmp
+trust_2019_08_07_16.dmp
+···
+
+執行還原
+
 ```
-sh recoverDB.sh "備份檔檔名" "復原 table 名"
-sh recoverDB.sh bolt_2019_08_07_16.dmp bolt
-sh recoverDB.sh trust_2019_08_07_16.dmp trust
+bash recoverDB.sh "備份檔檔名" "復原 table 名"
+bash recoverDB.sh bolt_2019_08_07_16.dmp bolt
+bash recoverDB.sh trust_2019_08_07_16.dmp trust
 ```
 
 ## Crontab
