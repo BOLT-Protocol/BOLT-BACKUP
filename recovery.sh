@@ -3,8 +3,8 @@ BOLT_SSH_IP=172.26.13.218
 APIGATEWAY_SSH_IP=172.26.0.201
 HOWINVEST_SSH_IP=172.26.8.110
 HOME="/home/tideops"
-BACKUP_FOLDER="${HOME}/Backup"
-SYNC_FOLDER="${HOME}/BOLT_SYNC_FOLDER"
+BACKUP_FOLDER="/extra_data/Backup"
+SYNC_FOLDER="/extra_data/BOLT_SYNC_FOLDER"
 
 sync() {
   list=$1
@@ -29,10 +29,10 @@ recoveryBOLT() {
   echo "recoveryBOLT!!"
   declare -a list
   # leveldb
-  list[0]="bolt;bolt-currency;${HOME}/bolt-currency/MerMer-framework/dataset"
-  list[1]="bolt;bolt-keychain;${HOME}/bolt-keychain/MerMer-framework/dataset"
-  list[2]="bolt;bolt-keystone;${HOME}/bolt-keystone/MerMer-framework/dataset"
-  list[3]="bolt;bolt-trust;${HOME}/bolt-trust/MerMer-framework/dataset"
+  #list[0]="bolt;bolt-currency;${HOME}/bolt-currency/MerMer-framework/dataset"
+  #list[1]="bolt;bolt-keychain;${HOME}/bolt-keychain/MerMer-framework/dataset"
+  list[0]="bolt;bolt-keystone;${HOME}/bolt-keystone/MerMer-framework/dataset"
+  #list[3]="bolt;bolt-trust;${HOME}/bolt-trust/MerMer-framework/dataset"
   # microservice config
   # list[4]="bolt;BOLT-CURRENCY.config.toml;${HOME}/BOLT/BOLT-CURRENCY/sample.config.toml"
   # list[5]="bolt;BOLT-KEYCHAIN.config.toml;${HOME}/BOLT/BOLT-KEYCHAIN/sample.config.toml"
@@ -68,13 +68,13 @@ main() {
 
   ZIPFILE_NAME=$(echo $1 | sed s/.tar.gz//g)
 
-  cp -rf ${BACKUP_FOLDER}/$ZIPFILE_NAME/* $SYNC_FOLDER/
+  cp -rf Backup/$ZIPFILE_NAME/* $SYNC_FOLDER/
 
   recoveryBOLT
-  recoveryHowninvest
-  recoveryAPIGateway
+  #recoveryHowninvest
+  #recoveryAPIGateway
 
-  rm -rf ${BACKUP_FOLDER}/$ZIPFILE_NAME
+  #rm -rf "Backup"
 }
 
 main "$@"

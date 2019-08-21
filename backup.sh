@@ -69,8 +69,10 @@ main() {
   list[6]="bolt2;BOLT-KEYSTONE.config.toml;${HOME}/BOLT-KEYSTONE/sample.config.toml"
   list[7]="bolt2;BOLT-TRUST.config.toml;${HOME}/BOLT-TRUST/sample.config.toml"
   # howinvest
-  list[9]="apigateway;howinvestmockapi;${HOME}/howinvestmockapi/MerMer-framework/dataset"
-  list[8]="howninvest;howinvest-receptiondesk;${HOME}/howinvest-receptiondesk/MerMer-framework/dataset"
+  list[9]="apigateway;howinvestapigateway;${HOME}/howinvestapigateway/MerMer-framework/dataset"
+  list[10]="howninvest;howinvest-blacklist;${HOME}/howinvest-blacklist/bolt-BlackList/dataset"
+  list[11]="howninvest;howinvest-trademodule;${HOME}/howinvest-trademodule/MerMer-framework/dataset"
+  list[12]="howninvest;howinvestauthmodule;${HOME}/howinvestauthmodule/MerMer-framework/dataset"
   sync ${list}
 
   if [ -d $FOLDER ]; then
