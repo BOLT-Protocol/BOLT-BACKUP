@@ -2,6 +2,17 @@
 
 **執行 recovery 前請先手動備份**
 
+## 前置作業
+
+建立 ssh key，並推到 BOLT_SSH_IP、APIGATEWAY_SSH_IP、HOWINVEST_SSH_IP 位置
+
+```
+$ mkdir -p ~/.ssh
+$ chmod 700 ~/.ssh
+$ ssh-keygen
+$ ssh-copy-id USER@HOST
+```
+
 ## backup leveldb & config
 
 `backup.sh`
@@ -143,6 +154,18 @@ bash recoverDB.sh trust_2019_08_07_16.dmp trust
 ## Crontab
 
 ```
+// 編輯 crontab
+crontab -e
+```
+
+將下面設定檔貼上後存擋
+
+```
 0 * * * * bash /home/tideops/BOLT-BACKUP/backup.sh
 0 0 * * * bash /home/tideops/BOLT-BACKUP/backupDB.sh
+```
+
+```
+// 顯示 crontab 列表
+crontab -l
 ```
