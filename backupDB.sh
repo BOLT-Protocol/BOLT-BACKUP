@@ -2,7 +2,7 @@
 SSH_IP=tideops@172.26.13.218
 SSH_KEY_PATH=~/.ssh/id_rsa
 ROOTFOLDER="/extra_data/BackupDB"
-REMOTE_ROOTFOLDER="/home/tideops/BackupDB"
+REMOTE_ROOTFOLDER="/tmp/BackupDB"
 BACKUP_DBNAME1="trust_"$(date +"%Y_%m_%d_%H")".dmp"
 BACKUP_DBNAME2="bolt_"$(date +"%Y_%m_%d_%H")".dmp"
 USER_NAME="postgres"

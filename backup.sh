@@ -24,9 +24,6 @@ sync() {
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/${name}  ${BOLT_SSH_IP}:${path} ${SYNC_FOLDER}/${name}  1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "bolt2" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/  ${BOLT_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
-    elif [ $plateform == "howninvest" ] && [ $name == "OrderEngine" ]; then
-      mkdir -p "${SYNC_FOLDER}/OrderEngine/dataset"  1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
-      rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path}/* ${SYNC_FOLDER}/${name}/dataset 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "howninvest" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
     elif [ $plateform == "apigateway" ]; then

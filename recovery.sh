@@ -29,10 +29,10 @@ recoveryBOLT() {
   echo "recoveryBOLT!!"
   declare -a list
   # leveldb
-  #list[0]="bolt;bolt-currency;${HOME}/bolt-currency/MerMer-framework/dataset"
-  #list[1]="bolt;bolt-keychain;${HOME}/bolt-keychain/MerMer-framework/dataset"
+  list[0]="bolt;bolt-currency;${HOME}/bolt-currency/MerMer-framework/dataset"
+  list[1]="bolt;bolt-keychain;${HOME}/bolt-keychain/MerMer-framework/dataset"
   list[0]="bolt;bolt-keystone;${HOME}/bolt-keystone/MerMer-framework/dataset"
-  #list[3]="bolt;bolt-trust;${HOME}/bolt-trust/MerMer-framework/dataset"
+  list[3]="bolt;bolt-trust;${HOME}/bolt-trust/MerMer-framework/dataset"
   # microservice config
   # list[4]="bolt;BOLT-CURRENCY.config.toml;${HOME}/BOLT/BOLT-CURRENCY/sample.config.toml"
   # list[5]="bolt;BOLT-KEYCHAIN.config.toml;${HOME}/BOLT/BOLT-KEYCHAIN/sample.config.toml"
@@ -44,7 +44,9 @@ recoveryBOLT() {
 recoveryHowninvest() {
   echo "recoveryHowninvest!!"
   declare -a list
-  list[8]="howninvest;howinvest-receptiondesk;${HOME}/howinvest-receptiondesk/MerMer-framework/dataset"
+  list[0]="howninvest;howinvest-blacklist;${HOME}/howinvest-blacklist/bolt-BlackList/dataset"
+  list[1]="howninvest;howinvest-trademodule;${HOME}/howinvest-trademodule/MerMer-framework/dataset"
+  list[2]="howninvest;howinvestauthmodule;${HOME}/howinvestauthmodule/MerMer-framework/dataset"
   sync ${list}
 }
 
@@ -52,7 +54,7 @@ recoveryAPIGateway() {
   echo "recoveryAPIGateway!!"
   declare -a list
   # howinvest
-  list[9]="apigateway;howinvestmockapi;${HOME}/howinvestmockapi/MerMer-framework/dataset"
+  list[0]="apigateway;howinvestapigateway;${HOME}/howinvestapigateway/MerMer-framework/dataset"
   sync ${list}
 }
 
@@ -68,13 +70,14 @@ main() {
 
   ZIPFILE_NAME=$(echo $1 | sed s/.tar.gz//g)
 
-  cp -rf Backup/$ZIPFILE_NAME/* $SYNC_FOLDER/
+  # 解壓縮完會是 extra_data/Backup 原因在於 backup 時，是對 ROOTFOLDER 做壓縮，而預設 ROOTFOLDER 為 /extra_data/Backup
+  cp -rf extra_data/Backup/$ZIPFILE_NAME/* $SYNC_FOLDER/
 
   recoveryBOLT
-  #recoveryHowninvest
-  #recoveryAPIGateway
+  recoveryHowninvest
+  recoveryAPIGateway
 
-  #rm -rf "Backup"
+  rm -rf extra_data/Backup
 }
 
 main "$@"

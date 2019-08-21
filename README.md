@@ -10,11 +10,12 @@
 
 ```
 BOLT_SSH_IP: BOLT 主機 ip
+APIGATEWAY_SSH_IP: APIGataway 主機 ip
 HOWINVEST_SSH_IP: HOWINVEST 主機 ip
 SSH_KEY_PATH: ssh key
-ROOTFOLDER: 要備份的目錄
-SYNC_FOLDER: sync 遠端設定檔的目錄
 HOME: sync 目標家目錄（配合下方 list）
+ROOTFOLDER: 要備份的目錄(增量備份的存檔)
+SYNC_FOLDER: 要備份的目錄(完全 sync)
 BACKUP_AMOUNT: 備份份數
 LOG_PATH: log 存放位置
 ```
@@ -25,7 +26,7 @@ LOG_PATH: log 存放位置
 
 ```
 list[0]="bolt1;bolt-currency;/home/ubuntu/bolt-currency/MerMer-framework/dataset"
-"目標分類 ; 目標名稱 ; rsync 目標"
+分別代表 "目標分類 ; 目標名稱 ; rsync 目標"
 ```
 
 ### exec:
@@ -45,6 +46,7 @@ SSH_IP: DB 主機 ip
 SSH_KEY_PATH: ssh key
 ROOTFOLDER: 要備份的目錄
 USER_NAME: DB username
+USER_PASSWORD: DB password
 BACKUP_AMOUNT: 備份份數
 LOG_PATH: log 存放位置
 ```
@@ -78,11 +80,11 @@ total size is 1,694,586  speedup is 1.99
 
 ```
 BOLT_SSH_IP: BOLT 主機 ip
+APIGATEWAY_SSH_IP: APIGataway 主機 ip
 HOWINVEST_SSH_IP: HOWINVEST 主機 ip
-SSH_KEY_PATH: ssh key
+HOME: sync 目標家目錄（配合下方 list）
 BACKUP_FOLDER: 備份的目錄
 SYNC_FOLDER: sync 遠端設定檔的目錄
-HOME: sync 目標家目錄（配合下方 list）
 ```
 
 ### exec:
