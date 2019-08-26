@@ -31,15 +31,6 @@ BACKUP_AMOUNT: 備份份數
 LOG_PATH: log 存放位置
 ```
 
-### 內部 sync() 參數
-
-可自行更改備份目標
-
-```
-list[0]="bolt1;bolt-currency;/home/ubuntu/bolt-currency/MerMer-framework/dataset"
-分別代表 "目標分類 ; 目標名稱 ; rsync 目標"
-```
-
 ### exec:
 
 ```
@@ -96,6 +87,17 @@ HOWINVEST_SSH_IP: HOWINVEST 主機 ip
 HOME: sync 目標家目錄（配合下方 list）
 BACKUP_FOLDER: 備份的目錄
 SYNC_FOLDER: sync 遠端設定檔的目錄
+```
+
+並修改下面 95, 102 行
+
+```
+# 解壓縮完會是 extra_data/Backup 原因在於 backup 時，是對 ROOTFOLDER 做壓縮，而預設 ROOTFOLDER 為 /extra_data/Backup
+cp -rf extra_data/Backup/$ZIPFILE_NAME/* $SYNC_FOLDER/
+
+
+## 因為壓縮後會是 ROOTFOLDER 最上層 extra_data，所以這便要改成 extra_data
+rm -rf extra_data
 ```
 
 ### exec:
