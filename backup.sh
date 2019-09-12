@@ -9,6 +9,7 @@ FOLDER="${ROOTFOLDER}/BOLT_"$(date +"%Y_%m_%d_%H")
 SYNC_FOLDER="/extra_data/BOLT_SYNC_FOLDER"
 BACKUP_AMOUNT="300"
 LOG_PATH="/extra_data/backuplog"
+RESULT="Backup Success."
 
 sync() {
   list=$1
@@ -22,16 +23,34 @@ sync() {
     echo "rsync ${name} data" 2>&1 | tee -a ${LOG_PATH}/backup.log >> ${LOG_PATH}/backup.err.log
     if [ $plateform == "bolt1" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/${name}  ${BOLT_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      if [ "$?" != "0" ]; then
+        RESULT="Backup False leveldb"
+      fi
     elif [ $plateform == "bolt2" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/ ${BOLT_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      if [ "$?" != "0" ]; then
+        RESULT="Backup False env, config"
+      fi
     elif [ $plateform == "howninvest1" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/${name}  ${HOWINVEST_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      if [ "$?" != "0" ]; then
+        RESULT="Backup False leveldb"
+      fi
     elif [ $plateform == "howninvest2" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/ ${HOWINVEST_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      if [ "$?" != "0" ]; then
+        RESULT="Backup False leveldb"
+      fi
     elif [ $plateform == "apigateway1" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/${name}  ${APIGATEWAY_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      if [ "$?" != "0" ]; then
+        RESULT="Backup False leveldb"
+      fi
     elif [ $plateform == "apigateway2" ]; then
       rsync -av -e "ssh -i ${SSH_KEY_PATH} -p 22" --delete --backup --backup-dir=$FOLDER/ ${APIGATEWAY_SSH_IP}:${path} ${SYNC_FOLDER}/${name} 1>> ${LOG_PATH}/backup.log 2>> ${LOG_PATH}/backup.err.log
+      if [ "$?" != "0" ]; then
+        RESULT="Backup False leveldb"
+      fi
     fi
   done
 }
@@ -81,10 +100,10 @@ main() {
   list[16]="bolt2;BOLT-KEYSTONE.config.toml;${HOME}/BOLT-KEYSTONE/sample.config.toml"
   list[17]="bolt2;BOLT-TRUST.config.toml;${HOME}/BOLT-TRUST/sample.config.toml"
   # howinvest
-  list[18]="apigateway1;howinvestapigateway;${HOME}/howinvestapigateway/MerMer-framework/dataset"
-  list[19]="howninvest1;howinvest-blacklist;${HOME}/howinvest-blacklist/bolt-BlackList/dataset"
+  list[18]="apigateway1;howinvest-apigateway;${HOME}/howinvest-apigateway/MerMer-framework/dataset"
+  list[19]="howninvest1;howinvest-blacklist;${HOME}/howinvest-blacklist/MerMer-framework/dataset"
   list[20]="howninvest1;howinvest-trademodule;${HOME}/howinvest-trademodule/MerMer-framework/dataset"
-  list[21]="howninvest1;howinvestauthmodule;${HOME}/howinvestauthmodule/MerMer-framework/dataset"
+  list[21]="howninvest1;howinvest-authmodule;${HOME}/howinvest-authmodule/MerMer-framework/dataset"
   #config
   list[22]="apigateway2;Howinvest-APIGateway.config;${HOME}/Howinvest-APIGateway/private/config.toml"
   list[23]="howninvest2;HowInvest-AuthModule.config;${HOME}/HowInvest-AuthModule/private/config.toml"
@@ -99,6 +118,7 @@ main() {
 
   delete_old
   echo "$(date +"%Y_%m_%d_%H:%M:%S") ===== backup leveldb & config finish!~ =====" 2>&1 | tee -a ${LOG_PATH}/backup.log >> ${LOG_PATH}/backup.err.log
+  echo $RESULT
 }
 
 main "$@"

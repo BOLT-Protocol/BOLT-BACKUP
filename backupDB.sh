@@ -9,6 +9,7 @@ USER_NAME="postgres"
 USER_PASSWORD=""
 BACKUP_AMOUNT="90"
 LOG_PATH="/extra_data/backuplog"
+RESULT="Backup Success."
 
 delete_old() {
   TOTAL=$(find ${ROOTFOLDER} -type f | wc -l)
@@ -40,10 +41,15 @@ EOF
   
   echo "scp file to local!~" 1>> ${LOG_PATH}/backupDB.log 2>> ${LOG_PATH}/backupDB.err.log
   scp -r -i ${SSH_KEY_PATH} -P 22 ${SSH_IP}:${REMOTE_ROOTFOLDER}/* ${ROOTFOLDER}/
+  if [ "$?" != "0" ]; then
+    RESULT="Backup False"
+  fi
 
   ssh -i ${SSH_KEY_PATH} ${SSH_IP} -p 22 "rm -rf ${REMOTE_ROOTFOLDER}"
   delete_old
   echo "$(date +"%Y_%m_%d_%H:%M:%S") ===== backup db finish!~ =====" 2>&1 | tee -a ${LOG_PATH}/backupDB.log >> ${LOG_PATH}/backupDB.err.log
+
+  echo $RESULT
 }
 
 main "$@"

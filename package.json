@@ -1,0 +1,24 @@
+{
+  "name": "bolt-backup",
+  "version": "0.2.2",
+  "description": "backup server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BOLT-Protocol/BOLT-BACKUP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BOLT-Protocol/BOLT-BACKUP/issues"
+  },
+  "homepage": "https://github.com/BOLT-Protocol/BOLT-BACKUP#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
+

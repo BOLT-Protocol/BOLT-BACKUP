@@ -2,3 +2,4 @@ Backup
 BackupDB
 BOLT_BACKUP
 backuplog
+node_modules/
