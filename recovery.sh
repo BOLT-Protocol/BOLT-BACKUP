@@ -1,10 +1,12 @@
 #!/bin/bash
-BOLT_SSH_IP=172.26.13.218
+BOLT_SSH_IP=172.26.15.65
 APIGATEWAY_SSH_IP=172.26.0.201
 HOWINVEST_SSH_IP=172.26.8.110
 HOME="/home/tideops"
 BACKUP_FOLDER="/extra_data/Backup"
 SYNC_FOLDER="/extra_data/BOLT_SYNC_FOLDER"
+RECOVER_TMP_DIR="/tmp/recover_tmp"
+RECOVER_SYNC_FOLDER_TMP_DIR="/tmp/recover_sync_folder_tmp"
 
 sync() {
   list=$1
@@ -46,7 +48,7 @@ recoveryBOLT() {
   # env
   list[8]="bolt2;BOLT-CURRENCY.env;${HOME}/BOLT-CURRENCY/env.js"
   list[9]="bolt2;BOLT-KEYCHAIN.env;${HOME}/BOLT-KEYCHAIN/env.js"
-  list[10]="bolt2;BOLT-KEYSTONE.env;${HOME}/BOLT-KEYSTONE/env"
+  list[10]="bolt2;BOLT-KEYSTONE.env;${HOME}/BOLT-KEYSTONE/env.js"
   list[11]="bolt2;BOLT-TRUST.env;${HOME}/BOLT-TRUST/env.js"
   list[12]="bolt2;contracts.env;${HOME}/contracts/env.js"
   list[13]="bolt2;gringotts.env;${HOME}/gringotts/env.js"
@@ -63,7 +65,7 @@ recoveryHowninvest() {
   declare -a list
   list[0]="howninvest1;howinvest-blacklist/dataset/*;${HOME}/howinvest-blacklist/bolt-BlackList/dataset"
   list[1]="howninvest1;howinvest-trademodule/dataset/*;${HOME}/howinvest-trademodule/MerMer-framework/dataset"
-  list[2]="howninvest1;howinvestauthmodule/dataset/*;${HOME}/howinvestauthmodule/MerMer-framework/dataset"
+  list[2]="howninvest1;howinvest-authmodule/dataset/*;${HOME}/howinvestauthmodule/MerMer-framework/dataset"
   list[3]="howninvest2;HowInvest-AuthModule.config;${HOME}/HowInvest-AuthModule/private/config.toml"
   list[4]="howninvest2;HowInvest-TradeModule.config;${HOME}/HowInvest-TradeModule/private/config.toml"
   list[5]="howninvest2;HowInvest-Blacklist.config;${HOME}/HowInvest-Blacklist/private/config.toml"
@@ -74,7 +76,7 @@ recoveryAPIGateway() {
   echo "recoveryAPIGateway!!"
   declare -a list
   # howinvest
-  list[0]="apigateway1;howinvestapigateway/dataset/*;${HOME}/howinvestapigateway/MerMer-framework/dataset"
+  list[0]="apigateway1;howinvest-apigateway/dataset/*;${HOME}/howinvestapigateway/MerMer-framework/dataset"
   list[1]="apigateway2;Howinvest-APIGateway.config;${HOME}/Howinvest-APIGateway/private/config.toml"
   sync ${list}
 }
@@ -86,13 +88,28 @@ main() {
     return
   fi
 
-  echo "unzip backup file!~ "
-  tar -zxvf "${BACKUP_FOLDER}/$1"
+  mkdir ${RECOVER_TMP_DIR} 
+  mkdir ${RECOVER_SYNC_FOLDER_TMP_DIR} 
 
-  ZIPFILE_NAME=$(echo $1 | sed s/.tar.gz//g)
+  for i in $(ls ${BACKUP_FOLDER} -r); do
+    cp "${BACKUP_FOLDER}/$i" ${RECOVER_TMP_DIR}
+    if [ "$i" == $1 ] ; then
+      break
+    fi
+  done;
+  cp -rf ${SYNC_FOLDER}/* "${RECOVER_SYNC_FOLDER_TMP_DIR}/"
+
+  echo "unzip backup file!~ "
+  for i in $(ls ${RECOVER_TMP_DIR} -r); do
+    tar -zxf "${RECOVER_TMP_DIR}/$i"
+  done;
+
 
   # 解壓縮完會是 extra_data/Backup 原因在於 backup 時，是對 ROOTFOLDER 做壓縮，而預設 ROOTFOLDER 為 /extra_data/Backup
-  cp -rf extra_data/Backup/$ZIPFILE_NAME/* $SYNC_FOLDER/
+  ROOTFOLDER="extra_data/Backup"
+  for i in $(ls ${ROOTFOLDER} -r); do
+    cp -rf ${ROOTFOLDER}/${i}/* ${RECOVER_SYNC_FOLDER_TMP_DIR}/
+  done;
 
   recoveryBOLT
   recoveryHowninvest
@@ -100,6 +117,8 @@ main() {
   
   ## 因為壓縮後會是 ROOTFOLDER 最上層 extra_data，所以這便要改成 extra_data
   rm -rf extra_data
+  rm -rf ${RECOVER_TMP_DIR} 
+  rm -rf ${RECOVER_SYNC_FOLDER_TMP_DIR} 
 }
 
 main "$@"

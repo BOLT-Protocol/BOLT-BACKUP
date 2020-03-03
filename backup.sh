@@ -1,5 +1,5 @@
 #!/bin/bash
-BOLT_SSH_IP=172.26.13.218
+BOLT_SSH_IP=172.26.15.65
 APIGATEWAY_SSH_IP=172.26.0.201
 HOWINVEST_SSH_IP=172.26.8.110
 SSH_KEY_PATH=~/.ssh/id_rsa
@@ -90,7 +90,7 @@ main() {
   # env
   list[8]="bolt2;BOLT-CURRENCY.env;${HOME}/BOLT-CURRENCY/env.js"
   list[9]="bolt2;BOLT-KEYCHAIN.env;${HOME}/BOLT-KEYCHAIN/env.js"
-  list[10]="bolt2;BOLT-KEYSTONE.env;${HOME}/BOLT-KEYSTONE/env"
+  list[10]="bolt2;BOLT-KEYSTONE.env;${HOME}/BOLT-KEYSTONE/env.js"
   list[11]="bolt2;BOLT-TRUST.env;${HOME}/BOLT-TRUST/env.js"
   list[12]="bolt2;contracts.env;${HOME}/contracts/env.js"
   list[13]="bolt2;gringotts.env;${HOME}/gringotts/env.js"

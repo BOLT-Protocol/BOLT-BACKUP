@@ -1,5 +1,5 @@
 #!/bin/bash
-SSH_IP=tideops@172.26.13.218
+SSH_IP=tideops@172.26.15.65
 SSH_KEY_PATH=~/.ssh/id_rsa
 ROOTFOLDER="/extra_data/BackupDB"
 REMOTE_ROOTFOLDER="/tmp/BackupDB"
